@@ -1,0 +1,7 @@
+$ sudo ismod helloModules.ko
+		파일명
+
+hello_init 함수호출
+
+$ lsmod // 모듈 insert 확인
+

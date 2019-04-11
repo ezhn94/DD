@@ -1,0 +1,1 @@
+cmd_/home/pi/DD/ex5/gpiosignalModule.ko := ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/pi/DD/ex5/gpiosignalModule.ko /home/pi/DD/ex5/gpiosignalModule.o /home/pi/DD/ex5/gpiosignalModule.mod.o ;  true

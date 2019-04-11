@@ -1,0 +1,1 @@
+cmd_/home/pi/DD/ex6/gpioAdvancedModule.ko := ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/pi/DD/ex6/gpioAdvancedModule.ko /home/pi/DD/ex6/gpioAdvancedModule.o /home/pi/DD/ex6/gpioAdvancedModule.mod.o ;  true

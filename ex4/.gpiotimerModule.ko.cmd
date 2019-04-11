@@ -1,0 +1,1 @@
+cmd_/home/pi/DD/ex4/gpiotimerModule.ko := ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/pi/DD/ex4/gpiotimerModule.ko /home/pi/DD/ex4/gpiotimerModule.o /home/pi/DD/ex4/gpiotimerModule.mod.o ;  true
