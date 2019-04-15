@@ -15,8 +15,10 @@
 #define GPIO_MAJOR	200
 #define GPIO_MINOR	0
 #define GPIO_DEVICE	"gpio_swled"
-#define GPIO_LED	18
-#define GPIO_SW		17
+#define GPIO_LED	16
+#define GPIO_LED2	19
+#define GPIO_SW		22
+#define GPIO_SW2	18
 #define BLK_SIZE	100
 //#define DEBUG
 
@@ -46,11 +48,11 @@ static irqreturn_t isr_func(int irq, void *data)
 	if (!flag)
 	{
 		flag = 1;
-		if ((irq == switch_irq) && !gpio_get_value(GPIO_LED))
+		if (irq == switch_irq)
+		{
 			gpio_set_value(GPIO_LED, 1);
-		else //IRQ발생 & LED ON일때
-			gpio_set_value(GPIO_LED, 0);
-
+			gpio_set_value(GPIO_LED2, 0);
+		}
 		printk(KERN_INFO " Called isr_func():%d\n", count);
 		count++;
 	}
@@ -60,7 +62,28 @@ static irqreturn_t isr_func(int irq, void *data)
 	}
 	return IRQ_HANDLED;
 }
-
+static irqreturn_t isr_func2(int irq, void *data)
+{
+	//IRQ발생 & LED가 OFF일때 
+	static int count;
+	static int flag = 0;
+	if (!flag)
+	{
+		flag = 1;
+		if (irq == switch_irq)
+		{
+			gpio_set_value(GPIO_LED2, 1);
+			gpio_set_value(GPIO_LED, 0);
+		}
+		printk(KERN_INFO " Called isr_func():%d\n", count);
+		count++;
+	}
+	else
+	{
+		flag = 0;
+	}
+	return IRQ_HANDLED;
+}
 
 static int gpio_open(struct inode *inod, struct file *fil)
 {
@@ -155,9 +178,18 @@ static int __init initModule(void)
 		printk(KERN_INFO "Error gpio_request SW\n");
 		return -1;
 	}
-
+	err = gpio_request(GPIO_SW2, "SW2");
+	if (err == -EBUSY)
+	{
+		printk(KERN_INFO "Error gpio_request SW\n");
+		return -1;
+	}
 	gpio_direction_output(GPIO_LED, 0);
+	gpio_direction_output(GPIO_LED2, 0);
+
 	switch_irq = gpio_to_irq(GPIO_SW);
+	switch_irq = gpio_to_irq(GPIO_SW2);
+
 	err = request_irq(switch_irq, isr_func, IRQF_TRIGGER_RISING, "switch", NULL);
 	if (err)
 	{
@@ -165,6 +197,12 @@ static int __init initModule(void)
 		return -1;
 	}
 
+	err = request_irq(switch_irq, isr_func2, IRQF_TRIGGER_RISING, "switch", NULL);
+	if (err)
+	{
+		printk(KERN_INFO "Error request_irq\n");
+		return -1;
+	}
 	return 0;
 }
 
