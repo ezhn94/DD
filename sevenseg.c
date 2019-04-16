@@ -8,6 +8,8 @@ int e = 25;//GPIO26
 int f = 28;// GPIO20
 int g = 29;//GPIO21
 int dp = 22;//GPIO6
+
+
 int i;
 
 void digital_0()//0
@@ -127,30 +129,29 @@ int main()
 	{
 		for (i = 22; i <= 29; i++)
 			pinMode(i, OUTPUT);
-	}
+	}		
 	while (1)
 	{
-		
-		delay(100);
+		delay(1000);
 		digital_0();//0
-		delay(100);
+		delay(1000);
 		digital_1();//1
-		delay(100);
+		delay(1000);
 		digital_2();//2
-		delay(100);
+		delay(1000);
 		digital_3();//3
-		delay(100);
+		delay(1000);
 		digital_4();//4
-		delay(100);
+		delay(1000);
 		digital_5();//5
-		delay(100);
+		delay(1000);
 		digital_6();//6
-		delay(100);
+		delay(1000);
 		digital_7();//7
-		delay(100);
+		delay(1000);
 		digital_8();//8
-		delay(100);
+		delay(1000);
 		digital_9();//9
-		delay(100);
+		delay(1000);		
 	}
 }

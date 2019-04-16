@@ -1,0 +1,1 @@
+cmd_/home/pi/DD/ex7/gpioioctlModule.ko := ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/pi/DD/ex7/gpioioctlModule.ko /home/pi/DD/ex7/gpioioctlModule.o /home/pi/DD/ex7/gpioioctlModule.mod.o ;  true

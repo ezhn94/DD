@@ -1,0 +1,1 @@
+cmd_/home/pi/DD/sw2Timer/switchModule.ko := ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/pi/DD/sw2Timer/switchModule.ko /home/pi/DD/sw2Timer/switchModule.o /home/pi/DD/sw2Timer/switchModule.mod.o ;  true

@@ -66,10 +66,11 @@ static irqreturn_t isr_func2(int irq, void *data)
 {
 	//IRQ발생 & LED가 OFF일때 
 	static int count;
-	static int flag = 0;
-	if (!flag)
+	static int flag2 = 0;
+
+	if (!flag2)
 	{
-		flag = 1;
+		flag2 = 1;
 		if (irq == switch_irq)
 		{
 			gpio_set_value(GPIO_LED2, 1);
@@ -80,7 +81,7 @@ static irqreturn_t isr_func2(int irq, void *data)
 	}
 	else
 	{
-		flag = 0;
+		flag2 = 0;
 	}
 	return IRQ_HANDLED;
 }

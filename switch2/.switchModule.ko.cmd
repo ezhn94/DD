@@ -1,0 +1,1 @@
+cmd_/home/pi/DD/switch2/switchModule.ko := ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/pi/DD/switch2/switchModule.ko /home/pi/DD/switch2/switchModule.o /home/pi/DD/switch2/switchModule.mod.o ;  true

@@ -31,8 +31,6 @@ struct cdev gpio_cdev;
 volatile unsigned int *gpio;
 static char msg[BLK_SIZE] = { 0 };
 
-
-
 static int gpio_open(struct inode *, struct file *);
 static int gpio_close(struct inode *, struct file *);
 static ssize_t gpio_read(struct file *, char *buff, size_t, loff_t *);
@@ -150,6 +148,7 @@ void digital_9(void)//9
 	gpio_set_value(g, 0);
 	gpio_set_value(p, 1);
 }
+
 static struct file_operations gpio_fops = {
 	.owner = THIS_MODULE,
 	.read = gpio_read,
