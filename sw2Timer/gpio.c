@@ -12,7 +12,7 @@ void signal_handler(int signum)
 	if (signum == SIGIO)
 	{
 		timeValue++;
-		printf("time:%d.%d sec\r", timeValue/10, timeValue%10);
+		printf("time: %02d.%02d sec\r", timeValue/100, timeValue%100);
 		fflush(stdout);
 	}
 }
