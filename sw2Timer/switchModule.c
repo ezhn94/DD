@@ -19,6 +19,129 @@
 
 #define MS_TO_NS(x) (x * 1E6L)
 
+#define A	16
+#define B	12
+#define C	13
+#define D	19
+#define E	26
+#define F	20
+#define G	21
+#define P	6
+
+void digital_0(void)//0
+{
+	gpio_set_value(A, 0);
+	gpio_set_value(B, 0);
+	gpio_set_value(C, 0);
+	gpio_set_value(D, 0);
+	gpio_set_value(E, 0);
+	gpio_set_value(F, 0);
+	gpio_set_value(G, 1);
+	gpio_set_value(P, 1);
+}
+void digital_1(void)//1
+{
+	gpio_set_value(A, 1);
+	gpio_set_value(B, 0);
+	gpio_set_value(C, 0);
+	gpio_set_value(D, 1);
+	gpio_set_value(E, 1);
+	gpio_set_value(F, 1);
+	gpio_set_value(G, 1);
+	gpio_set_value(P, 1);
+}
+void digital_2(void)//2
+{
+	gpio_set_value(A, 0);
+	gpio_set_value(B, 0);
+	gpio_set_value(C, 1);
+	gpio_set_value(D, 0);
+	gpio_set_value(E, 0);
+	gpio_set_value(F, 1);
+	gpio_set_value(G, 0);
+	gpio_set_value(P, 1);
+}
+void digital_3(void)//3
+{
+	gpio_set_value(A, 0);
+	gpio_set_value(B, 0);
+	gpio_set_value(C, 0);
+	gpio_set_value(D, 0);
+	gpio_set_value(E, 1);
+	gpio_set_value(F, 1);
+	gpio_set_value(G, 0);
+	gpio_set_value(P, 1);
+}
+void digital_4(void)//4
+{
+	gpio_set_value(A, 1);
+	gpio_set_value(B, 0);
+	gpio_set_value(C, 0);
+	gpio_set_value(D, 1);
+	gpio_set_value(E, 1);
+	gpio_set_value(F, 0);
+	gpio_set_value(G, 0);
+	gpio_set_value(P, 1);
+}
+void digital_5(void)//5
+{
+	gpio_set_value(A, 0);
+	gpio_set_value(B, 1);
+	gpio_set_value(C, 0);
+	gpio_set_value(D, 0);
+	gpio_set_value(E, 1);
+	gpio_set_value(F, 0);
+	gpio_set_value(G, 0);
+	gpio_set_value(P, 1);
+	gpio_set_value(E, 1);
+}
+void digital_6(void)//6
+{
+	gpio_set_value(A, 0);
+	gpio_set_value(B, 1);
+	gpio_set_value(C, 0);
+	gpio_set_value(D, 0);
+	gpio_set_value(E, 0);
+	gpio_set_value(F, 0);
+	gpio_set_value(G, 0);
+	gpio_set_value(P, 1);
+}
+void digital_7(void)//7
+{
+	gpio_set_value(A, 0);
+	gpio_set_value(B, 0);
+	gpio_set_value(C, 0);
+	gpio_set_value(D, 1);
+	gpio_set_value(E, 1);
+	gpio_set_value(F, 1);
+	gpio_set_value(G, 1);
+	gpio_set_value(P, 1);
+}
+void digital_8(void)//8
+{
+	gpio_set_value(A, 0);
+	gpio_set_value(B, 0);
+	gpio_set_value(C, 0);
+	gpio_set_value(D, 0);
+	gpio_set_value(E, 0);
+	gpio_set_value(F, 0);
+	gpio_set_value(G, 0);
+	gpio_set_value(P, 1);
+}
+void digital_9(void)//9
+{
+	gpio_set_value(A, 0);
+	gpio_set_value(B, 0);
+	gpio_set_value(C, 0);
+	gpio_set_value(D, 0);
+	gpio_set_value(E, 1);
+	gpio_set_value(F, 0);
+	gpio_set_value(G, 0);
+	gpio_set_value(P, 1);
+}
+
+char seg[8] = { A,B,C,D,E,F,G,P };
+
 struct cdev gpio_cdev;
 static char msg[BUF_SIZE] = { 0 };
 
@@ -43,17 +166,14 @@ static struct hrtimer hr_timer;
 // 10ms를 측정하기 위한 타이머 선언
 static struct hrtimer stopwatch;
 
+// hrTimer를 위한 변수
 ktime_t ktime, stime;
-unsigned long expireTime = 50000000L;	 //50ms unit:ns
-unsigned long stopwatchTime = 100000000L; //10ms unit:ns
 
 
 enum hrtimer_restart myTimer_callback(struct hrtimer *timer)
 {
 	if (flag1)
 		flag1 = 0;
-	else if (flag2)
-		flag2 = 0;
 
 	printk(KERN_INFO "myTimer_callback\n");
 
@@ -64,35 +184,81 @@ enum hrtimer_restart myStopwatch_callback(struct hrtimer *timer)
 {
 	ktime_t currtime, interval;
 	static int count = 0;
+	static int count2 = 0;
 	unsigned long delay_in_ms = 100L;	//100ms
+	static struct siginfo sinfo1;
+
+	// USER프로그램에 SIGIO를 전달한다.
+	memset(&sinfo1, 0, sizeof(struct siginfo));
+	sinfo1.si_signo = SIGIO;
+	sinfo1.si_code = SI_USER;
+
+	if (count % 10 == 0)
+	{
+		count2++;
+	}
+
+	count2 = count2 % 10;
+
+	if (count2 == 0)
+		digital_0();
+	else if (count2 == 1)
+		digital_1();
+	else if (count2 == 2)
+		digital_2();
+	else if (count2 == 3)
+		digital_3();
+	else if (count2 == 4)
+		digital_4();
+	else if (count2 == 5)
+		digital_5();
+	else if (count2 == 6)
+		digital_6();
+	else if (count2 == 7)
+		digital_8();
+	else if (count2 == 9)
+		digital_9();
+
+	if (task != NULL)
+	{
+		//kill()와 동일한 kernel함수
+		send_sig_info(SIGIO, &sinfo1, task);
+	}
+	else
+	{
+		printk(KERN_INFO "Error: USER PID\n");
+	}
 
 	//sw2가 입력되면 stopwatchTimer종료
 	if (flag2)
 	{
-		//hrtimer_cancel(&stopwatch);
-		pr_info("myStopwatch_callback is done (%ld).\n", jiffies);
+		flag2 = 0;
+		pr_info("stopwatch Time=%d\n", count);
+		count = 0;
+		count++;
+
 		return HRTIMER_NORESTART;
 	}
 	else
 	{
-		count++;
-		pr_info("count=%d\n", count);
-
+		count++;		
 		currtime = ktime_get();
 		interval = ktime_set(0, MS_TO_NS(delay_in_ms));
 		hrtimer_forward(timer, currtime, interval);
 		return HRTIMER_RESTART;
 	}
+	
+
 }
 
 //switch 2개를 인터럽트 소스로 사용
 static irqreturn_t isr_func(int irq, void *data)
 {
-	// hrTimer를 위한 변수
-	
 	//unsigned long delay_in_ms = 50L;	//50ms
 	//MS_TO_NS(delay_in_ms)
-	
+	unsigned long expireTime = 50000000L;	 //50ms unit:ns
+	unsigned long stopwatchTime = 100000000L; //100ms unit:ns
+
 	static int count = 0;
 
 	static struct siginfo sinfo;
@@ -103,18 +269,21 @@ static irqreturn_t isr_func(int irq, void *data)
 		if (!flag1)
 		{
 			flag1 = 1;
-					
-			printk(KERN_INFO "switch is push\n");
+			count = 0;
+			//-------------------------------------------------------------------
+
+			printk(KERN_INFO "start switch\n");
+			//kitme_set(설정초,설정나노초);
+			ktime = ktime_set(0, expireTime);
 			hrtimer_start(&hr_timer, ktime, HRTIMER_MODE_REL);
 			//-------------------------------------------------------------------
 
 			//-------------------------------------------------------------------
-			//kitme_set(설정초,설정나노초);
-			
 			printk(KERN_INFO "stopWatch is start\n");
+			//kitme_set(설정초,설정나노초);
+			stime = ktime_set(0, stopwatchTime);
 			hrtimer_start(&stopwatch, stime, HRTIMER_MODE_REL);
 			//-------------------------------------------------------------------
-			
 			//스위치가 눌렸을 때 응용프로그램에게 SIGUSR1를 전달한다.
 			//sinfo구조체를 0으로 초기화한다.
 			memset(&sinfo, 0, sizeof(struct siginfo));
@@ -130,7 +299,7 @@ static irqreturn_t isr_func(int irq, void *data)
 				printk(KERN_INFO "Error: USER PID\n");
 			}
 			count++;
-			printk(KERN_INFO " SW1 push, Called isr_func():%d\n", count);
+			printk(KERN_INFO " Called isr_func():%d\n", count);
 		}
 	} //sw2이 눌렸을 경우
 	else if (irq == switch_irq2)
@@ -139,14 +308,9 @@ static irqreturn_t isr_func(int irq, void *data)
 		{
 			flag2 = 1;
 
-			
-			printk(KERN_INFO "startTime\n");
+			printk(KERN_INFO "stop switch\n");
+			ktime = ktime_set(0, expireTime);
 			hrtimer_start(&hr_timer, ktime, HRTIMER_MODE_REL);
-
-
-			printk(KERN_INFO "stopWatch is stop\n");
-			hrtimer_cancel(&stopwatch);
-
 
 			//스위치가 눌렸을 때 응용프로그램에게 SIGUSR1를 전달한다.
 			//sinfo구조체를 0으로 초기화한다.
@@ -163,7 +327,7 @@ static irqreturn_t isr_func(int irq, void *data)
 				printk(KERN_INFO "Error: USER PID\n");
 			}
 			count++;
-			printk(KERN_INFO " SW2 push, Called isr_func():%d\n", count);
+			printk(KERN_INFO " Called isr_func():%d\n", count);
 		}
 	}
 	return IRQ_HANDLED;
@@ -213,12 +377,14 @@ static ssize_t gpio_write(struct file *fil, const char *buff, size_t len, loff_t
 		}
 
 	}
+
 	return count;
 }
 
 static struct file_operations gpio_fops = {
 	.owner = THIS_MODULE,
 	.write = gpio_write,
+	//.read = gpio_read,
 	.open = gpio_open,
 	.release = gpio_close,
 };
@@ -233,6 +399,7 @@ static int __init initModule(void)
 	dev_t devno;
 	int err;
 	int count;
+	int i;
 
 	printk("Called initModule()\n");
 
@@ -279,12 +446,6 @@ static int __init initModule(void)
 
 	printk(KERN_INFO "'sudo chmod 666 /dev/%s'\n", GPIO_DEVICE);
 
-
-
-
-
-
-
 	// 현재 GPIO_SW1이 사용중인지 확인하고 사용권한 획득
 	err = gpio_request(GPIO_SW1, "SW1");
 	if (err == -EBUSY)
@@ -317,24 +478,36 @@ static int __init initModule(void)
 		return -1;
 	}
 
-	//kitme_set(설정초,설정나노초);
-	ktime = ktime_set(0, expireTime);
-	//hrtimer_init(타이머구조체 주소값, 등록할 타이머값,상대시간으로설정)
+	// 채터링 방지 타이머 생성 및 초기화
 	hrtimer_init(&hr_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	hr_timer.function = &myTimer_callback;
-	
-	stime = ktime_set(0, stopwatchTime);
-	//hrtimer_init(타이머구조체 주소값, 등록할 타이머값,상대시간으로설정)
+
+	// stopwatch 타이머 생성 및 초기화
 	hrtimer_init(&stopwatch, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	stopwatch.function = &myStopwatch_callback;
 
+	for (i = 0; i < 8; i++)
+	{
+		err = gpio_request(seg[i], "LED");		// gpio 권한을 획득
+		if (err == -EBUSY)
+		{
+			printk(KERN_INFO "Error gpio_request\n");
+			return -1;
+		}
 
+
+	}
+	for (i = 0; i < 8; i++)
+	{
+		gpio_direction_output(seg[i], 1);
+	}
 	return 0;
 }
 
 static void __exit cleanupModule(void)
 {
 	dev_t devno = MKDEV(GPIO_MAJOR, GPIO_MINOR);
+	int i;
 
 	// 0. 생성했던 노드를 제거한다.
 	device_destroy(class, devno);
@@ -354,6 +527,15 @@ static void __exit cleanupModule(void)
 	gpio_free(GPIO_SW1);
 	gpio_free(GPIO_SW2);
 
+	for (i = 0; i < 8; i++)
+	{
+		gpio_free(seg[i]);
+	}
+
+	//hr-Timer 취소
+	hrtimer_cancel(&stopwatch);
+	hrtimer_cancel(&hr_timer);
+
 	printk("Good-bye!\n");
 }
 
@@ -366,4 +548,4 @@ module_exit(cleanupModule);
 //모듈의 정보
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("GPIO Driver Module");
-MODULE_AUTHOR("JH");
+MODULE_AUTHOR("Heejin Park");
