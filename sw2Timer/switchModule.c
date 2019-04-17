@@ -197,7 +197,10 @@ enum hrtimer_restart myStopwatch_callback(struct hrtimer *timer)
 	{
 		count2++;
 	}
-
+	if (count % 1000 == 0)
+	{
+		count2 = 0;
+	}
 	count2 = count2 % 100;
 
 	if (count2 == 0)
@@ -215,6 +218,8 @@ enum hrtimer_restart myStopwatch_callback(struct hrtimer *timer)
 	else if (count2 == 6)
 		digital_6();
 	else if (count2 == 7)
+		digital_7();
+	else if (count2 == 8)
 		digital_8();
 	else if (count2 == 9)
 		digital_9();
