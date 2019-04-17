@@ -28,6 +28,8 @@
 #define G	21
 #define P	6
 
+static int count2 = 0;
+
 void digital_0(void)//0
 {
 	gpio_set_value(A, 0);
@@ -184,15 +186,16 @@ enum hrtimer_restart myStopwatch_callback(struct hrtimer *timer)
 {
 	ktime_t currtime, interval;
 	static int count = 0;
-	static int count2 = 0;
+	
+	
 	unsigned long delay_in_ms = 10L;	//100ms
 	static struct siginfo sinfo1;
-
+	
 	// USER프로그램에 SIGIO를 전달한다.
 	memset(&sinfo1, 0, sizeof(struct siginfo));
 	sinfo1.si_signo = SIGIO;
 	sinfo1.si_code = SI_USER;
-
+		
 	if (count % 100 == 0 && count!=0)
 	{
 		count2++;
@@ -241,12 +244,11 @@ enum hrtimer_restart myStopwatch_callback(struct hrtimer *timer)
 		pr_info("stopwatch Time=%d\n", count);
 		count = 0;
 		count++;
-
 		return HRTIMER_NORESTART;
 	}
 	else
 	{
-		count++;
+		count++;		
 		currtime = ktime_get();
 		interval = ktime_set(0, MS_TO_NS(delay_in_ms));
 		hrtimer_forward(timer, currtime, interval);
@@ -366,7 +368,7 @@ static ssize_t gpio_write(struct file *fil, const char *buff, size_t len, loff_t
 	memset(msg, 0, BUF_SIZE);
 
 	count = copy_from_user(msg, buff, len);
-
+	count2 = 0;
 	// msg문자열을 숫자로 변환
 	pid = simple_strtol(msg, &endptr, 10);
 	printk(KERN_INFO "pid=%d\n", pid);
@@ -382,7 +384,6 @@ static ssize_t gpio_write(struct file *fil, const char *buff, size_t len, loff_t
 		}
 
 	}
-
 	return count;
 }
 
